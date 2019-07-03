@@ -5,7 +5,7 @@ function tw(Dest) {
 	var dstR,pq,pqV,xa,te,tlMx=300,tl,mes;
 	var doc = document;
 	var vaq = []; //vetor arquivos .js
-	var oEstat;
+	var oEstat,oEstatG,oEs;
 	setTimeout(init,200);
 	//===============================================
 	var vClick = {
@@ -123,6 +123,7 @@ function tw(Dest) {
 			eval('vt='+tx.substrAt('\n'));
 			//mostra
 			for (var i=0;i<vt.length;i++) {
+				if (!oEstatG) oEs.inc1(vt[i].created_at.substring(0,4));
 				if (vt[i].text.toLowerCase().indexOf(pqV)!=-1) {
 					mostraUm(vt[i]);
 				}
@@ -131,7 +132,10 @@ function tw(Dest) {
 			xa+=1
 			if (xa<vaq.length) {
 				setTimeout(pede,10);
+
 			} else {
+				// 
+				if (!oEstatG) oEstatG = oEs;
 				
 				//fim, mostra estatística
 				var es = doc.createElement('table');
@@ -144,9 +148,26 @@ function tw(Dest) {
 				c.innerHTML=oEstat.toHtml()
 				ln.appendChild(c);
 				
+				//grafico, cruza as 2 estat.
+				var vg  = oEstatG.getVetor();
+				var vf  = oEstat.getVetor();
+				var vr = [];
+				for (prop in vg) {
+					var vl = vf[prop]?vf[prop]:0;
+					var pr = vl/vg[prop]*100;
+					vr[vr.length] = [
+						prop
+							+'<br> ('+vg[prop]+'):'
+							+'<br><b>'+vl+'</b>'
+							+'<br>'+format(pr,1)+'%'
+						,pr					
+					];
+				}
+					
+				
 				var c = doc.createElement('td');
 				c.style.cssText = 'width:80%;';
-				c.innerHTML=oEstat.toGraphBar()
+				c.innerHTML=(new graphBar(vr)).getHtml();//oEstat.toGraphBar()
 				ln.appendChild(c);
 				
 				dstR.insertBefore(es,dstR.firstChild);
@@ -188,6 +209,7 @@ function tw(Dest) {
 		te = 0; 
 		tl = 0;
 		mes = '';
+		if (!oEstatG) oEs = new estat('total posts');		
 		oEstat = new estat('tw por mês');
 		pede();
 	}

@@ -1,5 +1,6 @@
 //===================================================
 function tw(Dest) {
+	var dro = '../twitter/data/js/tweets/';
 	var dst = Dest;
 	var dstR,pq,pqV,xa,te,tlMx=300,tl,mes;
 	var doc = document;
@@ -133,8 +134,21 @@ function tw(Dest) {
 			} else {
 				
 				//fim, mostra estatística
-				var es = doc.createElement('div');
-				es.innerHTML = oEstat.toHtml();//.substrAt('>');
+				var es = doc.createElement('table');
+				es.style.cssText = 'width:100%;';
+				var ln = doc.createElement('tr');
+				es.appendChild(ln);
+				
+				var c = doc.createElement('td');
+				c.style.cssText = 'width:20%;';
+				c.innerHTML=oEstat.toHtml()
+				ln.appendChild(c);
+				
+				var c = doc.createElement('td');
+				c.style.cssText = 'width:80%;';
+				c.innerHTML=oEstat.toGraphBar()
+				ln.appendChild(c);
+				
 				dstR.insertBefore(es,dstR.firstChild);
 				
 				//
@@ -150,7 +164,7 @@ function tw(Dest) {
 			
 			
 		} catch (e) {
-			alert('faz tw='+erro(e));
+			alert('faz tw='+erro(e)+" eval("+'vt='+tx.substrAt('\n')+')');
 		}
 	}
 	//===============================================
@@ -159,7 +173,7 @@ function tw(Dest) {
 		var aj = new carregaUrl();
 		//aj.charSet = 'UTF-8';
 		//aj.debug = true;
-		aj.abre('tweets/'+vaq[xa],mostraAq);				
+		aj.abre(dro+vaq[xa],mostraAq);				
 	}
 	//===============================================
 	function pesq(ev) {
@@ -214,7 +228,7 @@ function tw(Dest) {
 		var aj = new carregaUrl();
 		//aj.charSet = 'UTF-8';
 		//aj.debug = true;
-		aj.abre('tweets/',init1);
+		aj.abre(dro,init1);
 		
 		//style
 		if (doc.getElementsByTagName('style').length==0) {

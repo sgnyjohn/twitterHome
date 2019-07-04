@@ -2,7 +2,7 @@
 function tw(Dest) {
 	var dro = '../twitter/data/js/tweets/';
 	var dst = Dest;
-	var dstR,pq,pqV,xa,te,tlMx=300,tl,mes;
+	var dstR,pq,oPq,pqV,xa,te,tlMx=300,tl,mes;
 	var doc = document;
 	var vaq = []; //vetor arquivos .js
 	var oEstat,oEstatG,oEs;
@@ -102,7 +102,7 @@ function tw(Dest) {
 						+v.retweeted_status.text.substring(0,Math.min(50,v.retweeted_status.text.length)))
 			) {
 		} else {
-			dom.new('p',troca(v.text,'\n','<br>'),{class:'text'},o);
+			dom.new('p',troca(oPq.negr(v.text),'\n','<br>'),{class:'text'},o);
 			//dom.new('p',v.created_at,{class:'at'},o);
 			for (var i in mostra) {
 				var ret = aevalStr(v.entities[i],mostra[i],' - ');
@@ -124,7 +124,8 @@ function tw(Dest) {
 			//mostra
 			for (var i=0;i<vt.length;i++) {
 				if (!oEstatG) oEs.inc1(vt[i].created_at.substring(0,4));
-				if (vt[i].text.toLowerCase().indexOf(pqV)!=-1) {
+				//if (vt[i].text.toLowerCase().indexOf(pqV)!=-1) {
+				if (oPq.pesq(vt[i].text)) {
 					mostraUm(vt[i]);
 				}
 			}
@@ -138,15 +139,16 @@ function tw(Dest) {
 				if (!oEstatG) oEstatG = oEs;
 				
 				//fim, mostra estatística
-				var es = doc.createElement('table');
-				es.style.cssText = 'width:100%;';
-				var ln = doc.createElement('tr');
-				es.appendChild(ln);
+
+				//var es = doc.createElement('table');
+				//es.style.cssText = 'width:100%;';
+				//var ln = doc.createElement('tr');
+				//es.appendChild(ln);
 				
-				var c = doc.createElement('td');
-				c.style.cssText = 'width:20%;';
-				c.innerHTML=oEstat.toHtml()
-				ln.appendChild(c);
+				//var c = doc.createElement('td');
+				//c.style.cssText = 'width:20%;';
+				//c.innerHTML=oEstat.toHtml()
+				//ln.appendChild(c);
 				
 				//grafico, cruza as 2 estat.
 				var vg  = oEstatG.getVetor();
@@ -163,14 +165,19 @@ function tw(Dest) {
 						,pr					
 					];
 				}
+				
+				dstR.insertBefore(
+					dom.new('div',(new graphBar(vr)).getHtml())
+					,dstR.firstChild
+				);
 					
 				
-				var c = doc.createElement('td');
-				c.style.cssText = 'width:80%;';
-				c.innerHTML=(new graphBar(vr)).getHtml();//oEstat.toGraphBar()
-				ln.appendChild(c);
+				//var c = doc.createElement('td');
+				//c.style.cssText = 'width:80%;';
+				//c.innerHTML=(new graphBar(vr)).getHtml();//oEstat.toGraphBar()
+				//ln.appendChild(c);
 				
-				dstR.insertBefore(es,dstR.firstChild);
+				//dstR.insertBefore(es,dstR.firstChild);
 				
 				//
 				es = doc.createElement('p');
@@ -197,6 +204,8 @@ function tw(Dest) {
 		aj.abre(dro+vaq[xa],mostraAq);				
 	}
 	//===============================================
+	// inicio pesquisa - arquivos são lidos por evento 
+	// 		de fim de download do anterior.
 	function pesq(ev) {
 		if (pqV==pq.value) {
 			return;
@@ -204,6 +213,13 @@ function tw(Dest) {
 		pqV = pq.value;
 		cookiePut('twitter.pqV',pqV);
 		
+		// obj pesquisa.
+		oPq = new strPesq(pqV);
+		if (!oPq.valid()==NaN) {
+			alert(oPq.valid());
+			return;
+		}
+	
 		dstR.innerHTML = '';
 		xa = 0;
 		te = 0; 
@@ -275,6 +291,8 @@ function tw(Dest) {
 				P.user_mentions SPAN {color:#509090;border:1px solid #d0d0d0;}
 				P.mes {margin:13px 0 0;}
 				P.mes SPAN {padding:2px 13px;font-size:110%;font-weight:bold;background-color:blue;color:#d0d0d0;}
+				B.negr {padding:4px 3px 0;background-color:red;color:white;border:4px dashed white;}
+				;B.negr {padding:2px 1px 0;border:4px doted green;}
 			`	+(false && browse.mobile?'BODY,INPUT,SELECT{font-size:180%;}':'')
 			;
 			var head = doc.head || doc.getElementsByTagName('head')[0];

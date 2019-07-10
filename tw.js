@@ -87,9 +87,6 @@ function tw(Dest) {
 			dom.new('p','<span>'+mes+'</span>',{class:'mes'},dstR);
 		}
 
-		//estatistica mes
-		oEstat.inc(mes.substring(0,4),1);
-		
 		//mostra...
 		var o = dom.new('div','',{class:(cl?cl:'tw')},dstR);
 		dom.new('p'
@@ -123,9 +120,12 @@ function tw(Dest) {
 			eval('vt='+tx.substrAt('\n'));
 			//mostra
 			for (var i=0;i<vt.length;i++) {
+				//estat geral
 				if (!oEstatG) oEs.inc1(vt[i].created_at.substring(0,4));
 				//if (vt[i].text.toLowerCase().indexOf(pqV)!=-1) {
-				if (oPq.pesq(vt[i].text)) {
+				if (oPq.pesq(vt[i].text+' '+vt[i].created_at)) {
+					//estatistica pesq
+					oEstat.inc(vt[i].created_at.substring(0,4),1);
 					mostraUm(vt[i]);
 				}
 			}
@@ -167,7 +167,7 @@ function tw(Dest) {
 				}
 				
 				dstR.insertBefore(
-					dom.new('div',(new graphBar(vr)).getHtml())
+					dom.new('div',(new graphBar(vr)).getHtml(),{class:"graphBar"})
 					,dstR.firstChild
 				);
 					
@@ -181,9 +181,9 @@ function tw(Dest) {
 				
 				//
 				es = doc.createElement('p');
-				es.innerHTML='FIM pesquisa "'+pqV+'"'
-					+'<br>listados: '+tl
-					+'<br>encontrados: '+te
+				es.innerHTML='FIM pesquisa: <b>"'+pqV+'"</b>'
+					+'<br>listados: <b>'+format(tl,0)+'</b>'
+					+'<br>encontrados: <b>'+format(te,0)+'</b>'
 					+'<hr>'
 				;
 				dstR.insertBefore(es,dstR.firstChild);
@@ -293,6 +293,8 @@ function tw(Dest) {
 				P.mes SPAN {padding:2px 13px;font-size:110%;font-weight:bold;background-color:blue;color:#d0d0d0;}
 				B.negr {padding:4px 3px 0;background-color:red;color:white;border:4px dashed white;}
 				;B.negr {padding:2px 1px 0;border:4px doted green;}
+				DIV.graphBar {border:2px solid #f0f0f0;padding:5px 17px;background:white;} 
+				TABLE.graphBar TD.bar {margin:5px auto;border:1px solid #f0f0f0;}
 			`	+(false && browse.mobile?'BODY,INPUT,SELECT{font-size:180%;}':'')
 			;
 			var head = doc.head || doc.getElementsByTagName('head')[0];
